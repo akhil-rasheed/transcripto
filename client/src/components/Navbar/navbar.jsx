@@ -1,13 +1,14 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import "../css/navbar.css";
-import { AuthContext } from "../Context/AuthContext";
+//mport "../css/navbar.css";
+import { AuthContext } from "../../Context/AuthContext";
 //import AuthDetails from "./AuthDetails";
 import "./navbar.css";
 
 export default function Navbar() {
   const [click, setClick] = useState(false);
   const { user, name } = useContext(AuthContext);
+
   console.log(name + " receieved at navbar");
   const handleClick = () => setClick(!click);
   return (
@@ -40,14 +41,25 @@ export default function Navbar() {
               </Link>
             </li>
             <li className="nav-item">
-              <Link
-                to="/login"
-                activeClassName="active"
-                className="nav-links"
-                onClick={handleClick}
-              >
-                Login
-              </Link>
+              {user ? (
+                <Link
+                  to="/login"
+                  activeClassName="active"
+                  className="nav-links"
+                  onClick={handleClick}
+                >
+                  Logout
+                </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  activeClassName="active"
+                  className="nav-links"
+                  onClick={handleClick}
+                >
+                  Login
+                </Link>
+              )}
             </li>
           </ul>
           <div className="nav-icon" onClick={handleClick}>

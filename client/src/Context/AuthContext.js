@@ -10,7 +10,7 @@ export const AuthContext = createContext();
 //3.
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(null);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setUser(user);

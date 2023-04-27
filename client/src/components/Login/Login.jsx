@@ -1,17 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Style.css";
 import logo from "./logo.svg";
-import { auth, database } from "../../firebase";
+import { auth } from "../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-const isEmpty = (value) => value.trim() === "";
-const isFiveChars = (value) => value.trim().length === 5;
 
 function Login() {
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
-
+  const navigate = useNavigate();
   const emailChangeHandler = (event) => {
     setEnteredEmail(event.target.value);
   };
@@ -33,6 +30,7 @@ function Login() {
         //   // docSnap.data() will be undefined in this case
         //   console.log("No such document!");
         // }
+        navigate("/");
       })
       .catch((error) => {
         console.log(error);
