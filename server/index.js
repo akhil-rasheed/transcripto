@@ -82,3 +82,22 @@ function analyseSpeech(phrase, wordList) {
   });
   return taggedWordList;
 }
+
+async function ssmlToAudio() {
+  const client = new textToSpeech.TextToSpeechClient();
+
+  const request = {
+    input: { text: words[curIndex] },
+    voice: { languageCode: "pt-PT", ssmlGender: "FEMALE" },
+    audioConfig: { audioEncoding: "MP3" },
+  };
+
+  // Performs the Text-to-Speech request
+  const [response] = await client.synthesizeSpeech(request);
+  const url = URL.createObjectURL(response.audioContent);
+  const audio = document.createElement("audio");
+  audio.src = url;
+  audio.controls = true;
+  document.body.appendChild(audio);
+  // Write the binary audio content to a local file
+}

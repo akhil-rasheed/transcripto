@@ -1,6 +1,8 @@
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+// import TextToSpeech from "google-cloud-text-to-speech";
+
 import "./Audio.css";
 
 const words = [
@@ -120,6 +122,18 @@ export default function Audio() {
               Stop recording
             </button>
           </div>
+          {/* <TextToSpeech
+            text={words[curIndex]}
+            voiceList={[
+              { name: "English (US) Male", value: "en-US-Wavenet-A" },
+              { name: "English (US) Female", value: "en-US-Wavenet-E" },
+            ]}
+            defaultVoice="en-US-Wavenet-E"
+            secretKey="AIzaSyCqQICOuuRMjN6wxv7SCWG6N2prMmd9GpY"
+            showAudioControl={true}
+            showSettings={false}
+            type="Page"
+          ></TextToSpeech> */}
         </div>
       </div>
     </div>
