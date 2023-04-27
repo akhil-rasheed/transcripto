@@ -15,21 +15,21 @@ app.use(morgan("combined"));
 
 app.post("/audio-to-base64", (req, res) => {
   const { description, audio } = req.body;
-  const base64 = audio.toString("base64");
-
-  res.send(base64);
+  detectSpeech(audio).then((result) => {
+    res.send(result);
+  });
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8010;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
 async function detectSpeech(base64audio) {
   const client = new speech.SpeechClient();
-  const encoding = "LINEAR16";
-  const sampleRateHertz = 44100;
-  const languageCode = "pt-PT";
+  const encoding = "WEBM_OPUS";
+  const sampleRateHertz = 48000;
+  const languageCode = "en-US";
   const config = {
     encoding: encoding,
     sampleRateHertz: sampleRateHertz,
@@ -50,8 +50,10 @@ async function detectSpeech(base64audio) {
 
   // Get a Promise representation of the final result of the job
   const [response] = await operation.promise();
-
-  for (word in response.results[0].alternatives[0].words) {
-    console.log(word);
-  }
+  const transcription = response.results
+    .map((result) => result.alternatives[0].transcript)
+    .join("\n");
+  const confidence = response.results[0].alternatives[0].confidence;
+  console.log(transcription);
+  return { transcription, confidence };
 }

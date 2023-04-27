@@ -3,57 +3,69 @@ import axios from "axios";
 import React, { useState } from "react";
 import "./Audio.css";
 export default function Audio() {
-    const recorderControls = useAudioRecorder();
-    const [curText, setCurText] = useState("Sample text");
-    const [accuracy, setAccuracy] = useState("");
-    const addAudioElement = async (blob) => {
-        const url = URL.createObjectURL(blob);
-        try {
-            const res = await axios.post(
-                "http://localhost:8080/audio-to-base64",
-                {
-                    description: curText,
-                    audio: blob,
-                }
-            );
-            const measuredAccuracy = res.data;
-            setAccuracy(measuredAccuracy);
-        } catch (err) {
-            console.log(err);
-        }
+  const recorderControls = useAudioRecorder();
+  const [curText, setCurText] = useState("Sample text");
+  const [accuracy, setAccuracy] = useState("");
+  const [base64Audio, setBase64Audio] = useState("");
+  function blobToBase64(blob) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result.split(",")[1]);
+      reader.readAsDataURL(blob);
+    });
+  }
+  async function fetchAccuracy() {
+    // const res = await
+    // console.log(res);
+    // return res;
+  }
 
-        // const audio = document.createElement("audio");
+  //   useEffect(() => {});
+  const addAudioElement = async (blob) => {
+    blobToBase64(blob).then((base64) => {
+      setBase64Audio(base64);
+      axios
+        .post("http://localhost:8010/audio-to-base64", {
+          description: curText,
+          audio: base64,
+        })
+        .then((res) => {
+          console.log(res.data);
+        });
+    });
+    //   const measuredAccuracy = res.data;
+    //   setAccuracy(measuredAccuracy);
 
-        // audio.src = url;
-        // audio.controls = true;
-        // //document.body.appendChild(audio);
-        // console.log(audio);
-    };
+    // const audio = document.createElement("audio");
 
-    return (
-        <div>
-            <div className="container1">
-                <div className="display">
-                    <div id="displayText">{curText} </div>
-                    <div id="recordText">This is user speech text.</div>
-                    <div>{accuracy}</div>
-                </div>
-                <div className="record">
-                    <div className="recordComp">
-                        <AudioRecorder
-                            onRecordingComplete={(blob) =>
-                                addAudioElement(blob)
-                            }
-                            recorderControls={recorderControls}
-                        />
-                    </div>
-                    <div className="recordComp">
-                        <button onClick={recorderControls.stopRecording}>
-                            Stop recording
-                        </button>
-                    </div>
-                </div>
-            </div>
+    // audio.src = url;
+    // audio.controls = true;
+    // //document.body.appendChild(audio);
+    // console.log(audio);
+  };
+
+  return (
+    <div>
+      <div className="container1">
+        <div className="display">
+          <div id="displayText">{curText} </div>
+          <div id="recordText">This is user speech text.</div>
+          <div>{accuracy}</div>
         </div>
-    );
+        <div className="record">
+          <div className="recordComp">
+            <AudioRecorder
+              onRecordingComplete={(blob) => addAudioElement(blob)}
+              recorderControls={recorderControls}
+            />
+          </div>
+          <div className="recordComp">
+            <button onClick={recorderControls.stopRecording}>
+              Stop recording
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
