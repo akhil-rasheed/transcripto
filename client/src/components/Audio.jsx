@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 
 export default function Audio() {
@@ -8,7 +9,9 @@ export default function Audio() {
     audio.src = url;
     audio.controls = true;
     document.body.appendChild(audio);
-    console.log(audio);
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = () => {};
   };
 
   return (
