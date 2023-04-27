@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import "../css/navbar.css";
 import { AuthContext } from "../Context/AuthContext";
 //import AuthDetails from "./AuthDetails";
+import "./navbar.css";
+
 export default function Navbar() {
   const [click, setClick] = useState(false);
   const { user, name } = useContext(AuthContext);

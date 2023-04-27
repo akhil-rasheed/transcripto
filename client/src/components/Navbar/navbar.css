@@ -14,7 +14,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 110%;
   height: 80px;
   max-width: 1500px;
 }
@@ -56,6 +56,7 @@ ul{
 .nav-item {
   line-height: 40px;
   margin-right: 1rem;
+  border-bottom: 1px solid black;
 }
 
 .nav-item:after {
@@ -69,7 +70,7 @@ ul{
 
 .nav-item:hover:after {
   width: 80%;
-  background: #ffdd40;
+  background: #77037B;
 }
 
 .nav-item .active {
@@ -86,17 +87,18 @@ ul{
     display: flex;
     flex-direction: column;
     width: 100%;
-    border-top: 1pxsolid #fff;
+    border-top: 0px solid #fff;
     position: absolute;
     top: 80px;
     left: -110%;
     opacity: 1;
     transition: all 0.5s ease;
+    height: 100vh;
   }
 
   .nav-menu.active {
-    background: #1f5156;
-    left: -10%;
+    background: #5995fd;
+    left: -0%;
     opacity: 1;
     transition: all 0.5s ease;
     z-index: 1;
