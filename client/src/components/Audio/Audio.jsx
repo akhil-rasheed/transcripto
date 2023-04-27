@@ -18,7 +18,9 @@ export default function Audio() {
     const recorderControls = useAudioRecorder();
     const [curIndex, setcurIndex] = useState(0);
     const [transcriptResult, setTranscriptResult] = useState([]);
-    const [base64Audio, setBase64Audio] = useState("");
+    const [transcription, setTranscription] = useState("");
+    const [accuracy, setAccuracy] = useState("");
+    const [showResult, setShowResult] = useState(false);
 
     useEffect(() => {
         if (curIndex > words.length - 1) {
@@ -32,16 +34,9 @@ export default function Audio() {
             reader.readAsDataURL(blob);
         });
     }
-    async function fetchAccuracy() {
-        // const res = await
-        // console.log(res);
-        // return res;
-    }
 
-    //   useEffect(() => {});
     const addAudioElement = async (blob) => {
         blobToBase64(blob).then((base64) => {
-            setBase64Audio(base64);
             axios
                 .post("http://localhost:8010/audio-to-base64", {
                     description: words[curIndex],
@@ -49,7 +44,10 @@ export default function Audio() {
                 })
                 .then((res) => {
                     console.log(res.data);
-                    setTranscriptResult(JSON.parse(res.data));
+                    setTranscriptResult(res.data.taggedList);
+                    setAccuracy(res.data.accuracy);
+                    setTranscription(res.data.transcription);
+                    setShowResult(true);
                 });
         });
         //   const measuredAccuracy = res.data;
@@ -69,24 +67,53 @@ export default function Audio() {
                 <div className="display">
                     <div id="displayText">{words[curIndex]} </div>
                     <div id="recordText">
-                        <ul>
-                            {transcriptResult.length === 0
-                                ? ""
-                                : transcriptResult.map((wordRecord) => {
-                                      return (
-                                          <li>
-                                              {wordRecord.matchedWord} -{" "}
-                                              {wordRecord.tag}
-                                          </li>
-                                      );
-                                  })}
-                        </ul>
+                        <div>
+                            {showResult
+                                ? words[curIndex]
+                                      .toLowerCase()
+                                      .split(" ")
+                                      .map((word) => {
+                                          let classname = "";
+                                          const record = transcriptResult.find(
+                                              (word) =>
+                                                  word.matchedWord === word
+                                          );
+                                          console.log(record);
+                                          if (
+                                              record &&
+                                              record.tag === "Correct"
+                                          ) {
+                                              classname = "correct";
+                                          } else if (
+                                              record &&
+                                              record.tag === "Partial"
+                                          ) {
+                                              classname = "partial";
+                                          } else {
+                                              classname = "wrong";
+                                          }
+                                          return (
+                                              <span
+                                                  key={word.matchedWord}
+                                                  className={classname}
+                                              >
+                                                  {word}
+                                              </span>
+                                          );
+                                      })
+                                : null}
+                        </div>
                     </div>
                 </div>
                 <div>
+                    <p>
+                        {transcription} - {accuracy}
+                    </p>
                     <button
                         onClick={() => {
                             setcurIndex(curIndex + 1);
+                            setTranscriptResult([]);
+                            setShowResult(false);
                         }}
                     >
                         Next
