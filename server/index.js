@@ -69,7 +69,7 @@ function analyseSpeech(phrase, wordList) {
   const filteredWordList = wordList.filter((word) => {
     return phraseArray.includes(word[0]);
   });
-  const taggedWordList = wordList.map((word) => {
+  const taggedWordList = filtwordListeredWordList.map((word) => {
     let tag = "";
     if (word[1] > 0.75) tag = "Correct";
     else if (word[1] > 0.5) tag = "Partial";

@@ -48,10 +48,14 @@ export default function Audio() {
 
   return (
     <div>
-      <div className="container1">
-        <div className="display">
-          <div id="displayText">{curText} </div>
-          <div id="recordText">This is user speech text.</div>
+      <div className="container1 bg-white">
+        <div className="display bg-white text-white flex flex-col p-8 h-1/2 m-4 rounded-md">
+          <div className=" h-full bg-black/50 flex flex-col justify-center my-2  rounded-lg ">
+            {curText}{" "}
+          </div>
+          <div className=" h-full bg-black/50 flex flex-col justify-center my-2  rounded-lg">
+            This is user speech text.
+          </div>
           <div>{accuracy}</div>
         </div>
         <div className="record">
