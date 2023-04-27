@@ -1,17 +1,14 @@
-import { useState } from "react";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 
 export default function Audio() {
   const recorderControls = useAudioRecorder();
-  const [url, setUrl] = useState("");
   const addAudioElement = (blob) => {
-    const newurl = URL.createObjectURL(blob);
-    setUrl(newurl);
-  };
-
-  const play = () => {
-    const audio = new Audio(url);
-    audio.play();
+    const url = URL.createObjectURL(blob);
+    const audio = document.createElement("audio");
+    audio.src = url;
+    audio.controls = true;
+    document.body.appendChild(audio);
+    console.log(audio);
   };
 
   return (
@@ -21,7 +18,6 @@ export default function Audio() {
         recorderControls={recorderControls}
       />
       <button onClick={recorderControls.stopRecording}>Stop recording</button>
-      <button onClick={play}>play recording</button>
     </div>
   );
 }
