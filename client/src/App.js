@@ -1,8 +1,8 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 
 function App() {
-  return (
     const recorderControls = useAudioRecorder();
     const [url, setUrl] = useState("");
     const addAudioElement = (blob) => {
@@ -30,8 +30,7 @@ function App() {
             </button>
             <button onClick={play}>play recording</button>
         </div>
-    )
-  );
+    );
 }
 
 export default App;
