@@ -12,7 +12,6 @@ export default function Navbar() {
         <div className="nav-container">
           <Link to="/" className="nav-logo">
             Transcripto
-            <i className="fas fa-code"></i>
           </Link>
 
           <ul className={click ? "nav-menu active" : "nav-menu"}>
@@ -28,7 +27,7 @@ export default function Navbar() {
             </li>
             <li className="nav-item">
               <Link
-                to="/"
+                to="/register"
                 activeClassName="active"
                 className="nav-links"
                 onClick={handleClick}
@@ -38,7 +37,7 @@ export default function Navbar() {
             </li>
             <li className="nav-item">
               <Link
-                to="/"
+                to="/login"
                 activeClassName="active"
                 className="nav-links"
                 onClick={handleClick}

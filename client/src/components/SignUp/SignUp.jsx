@@ -1,6 +1,6 @@
 import React from "react";
 import "./Style.css";
-import register from "./signin.svg";
+import register from "./register.svg";
 import { Link } from "react-router-dom";
 function SignUp() {
   return (
@@ -21,8 +21,8 @@ function SignUp() {
               <i className="fas fa-lock"></i>
               <input type="password" placeholder="Password" />
             </div>
-            <input type="submit" value="Login" className="btn solid" />
-            <p className="social-text">Or Sign in with social platforms</p>
+            <input type="submit" value="Sign Up" className="btn solid" />
+            {/* <p className="social-text">Or Sign in with social platforms</p>
             <div className="social-media">
               <a href="#" className="social-icon">
                 <i className="fab fa-facebook-f"></i>
@@ -36,7 +36,7 @@ function SignUp() {
               <a href="#" className="social-icon">
                 <i className="fab fa-linkedin-in"></i>
               </a>
-            </div>
+            </div> */}
           </form>
         </div>
       </div>

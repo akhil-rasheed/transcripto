@@ -5,8 +5,11 @@ export default function Audio() {
   const recorderControls = useAudioRecorder();
   const [url, setUrl] = useState("");
   const addAudioElement = (blob) => {
+    console.log("ENtered");
+
     const newurl = URL.createObjectURL(blob);
     setUrl(newurl);
+    console.log(url);
   };
 
   const play = () => {

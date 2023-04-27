@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Style.css";
-import logo2 from "./log2.svg";
+import logo from "./logo.svg";
 import { useRef, useState } from "react";
 const isEmpty = (value) => value.trim() === "";
 const isFiveChars = (value) => value.trim().length === 5;
@@ -59,7 +59,7 @@ function Login() {
               {!formInputValidity.password && <p>Enter the valid Password</p>}
             </div>
             <input type="submit" value="Login" className="btn solid" />
-            <p className="social-text">Or Sign in with social platforms</p>
+            {/* <p className="social-text">Or Sign in with social platforms</p>
             <div className="social-media">
               <a href="#" className="social-icon">
                 <i class="fab fa-facebook-f"></i>
@@ -73,7 +73,7 @@ function Login() {
               <a href="#" className="social-icon">
                 <i class="fab fa-linkedin-in"></i>
               </a>
-            </div>
+            </div> */}
           </form>
         </div>
       </div>
@@ -85,7 +85,7 @@ function Login() {
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis,
               ex ratione. Aliquid!
             </p>
-            <Link to="/signup">
+            <Link to="/register">
               <button className="btn transparent" id="sign-up-btn">
                 Sign up
               </button>
