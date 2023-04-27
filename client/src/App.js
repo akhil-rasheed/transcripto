@@ -3,22 +3,34 @@ import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    const recorderControls = useAudioRecorder();
+    const [url, setUrl] = useState("");
+    const addAudioElement = (blob) => {
+        const newurl = URL.createObjectURL(blob);
+        setUrl(newurl);
+        // const audio = document.createElement("audio");
+        // audio.src = newurl;
+        // audio.controls = true;
+        // document.body.appendChild(audio);
+    };
+
+    const play = () => {
+        const audio = new Audio(url);
+        audio.play();
+    };
+
+    return (
+        <div>
+            <AudioRecorder
+                onRecordingComplete={(blob) => addAudioElement(blob)}
+                recorderControls={recorderControls}
+            />
+            <button onClick={recorderControls.stopRecording}>
+                Stop recording
+            </button>
+            <button onClick={play}>play recording</button>
+        </div>
+    )
   );
 }
 
