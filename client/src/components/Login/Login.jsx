@@ -1,36 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Style.css";
 import logo from "./logo.svg";
-import { useRef, useState } from "react";
+import { auth, database } from "../../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 const isEmpty = (value) => value.trim() === "";
 const isFiveChars = (value) => value.trim().length === 5;
 
 function Login() {
-  const [formInputValidity, setformInputValidity] = useState({
-    email: true,
-    password: true,
-  });
-  const emailInputRef = useRef();
-  const passwordInputRef = useRef();
+  const [enteredEmail, setEnteredEmail] = useState("");
+  const [enteredPassword, setEnteredPassword] = useState("");
+
+  const emailChangeHandler = (event) => {
+    setEnteredEmail(event.target.value);
+  };
+
+  const passwordChangeHandler = (event) => {
+    setEnteredPassword(event.target.value);
+  };
   const SubmitHandler = (event) => {
     event.preventDefault();
+    signInWithEmailAndPassword(auth, enteredEmail, enteredPassword)
+      .then(async (userCredential) => {
+        console.log(userCredential);
+        // const docRef = doc(database, "users", `${enteredEmail}`);
+        // const docSnap = await getDoc(docRef);
 
-    const enteredEmail = emailInputRef.current.value;
-    const enterdPassword = passwordInputRef.current.value;
+        // if (docSnap.exists()) {
+        //   console.log("Document data:", docSnap.data());
+        // } else {
+        //   // docSnap.data() will be undefined in this case
+        //   console.log("No such document!");
+        // }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    const userData = {
+      email: enteredEmail,
+      password: enteredPassword,
+    };
 
-    const enteredEmailIsValid = !isEmpty(enteredEmail);
-    const enteredPasswordIsValid = isFiveChars(enterdPassword);
+    console.log(userData);
 
-    setformInputValidity({
-      email: enteredEmailIsValid,
-      password: enteredPasswordIsValid,
-    });
-
-    const formIsValid = enteredEmailIsValid && enteredPasswordIsValid;
-    if (!formIsValid) {
-      //return
-    }
+    setEnteredEmail("");
+    setEnteredPassword("");
   };
   return (
     <div className="container">
@@ -43,20 +58,20 @@ function Login() {
               <input
                 type="email"
                 placeholder="Email"
-                ref={emailInputRef}
+                value={enteredEmail}
+                onChange={emailChangeHandler}
                 required
               />
-              {!formInputValidity.email && <p>Enter the valid Email</p>}
             </div>
             <div className="input-field">
               <i className="fas fa-lock"></i>
               <input
                 type="password"
                 placeholder="Password"
-                ref={passwordInputRef}
+                value={enteredPassword}
+                onChange={passwordChangeHandler}
                 required
               />
-              {!formInputValidity.password && <p>Enter the valid Password</p>}
             </div>
             <input type="submit" value="Login" className="btn solid" />
             {/* <p className="social-text">Or Sign in with social platforms</p>
