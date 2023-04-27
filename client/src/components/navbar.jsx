@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/navbar.css";
-
+import { AuthContext } from "../Context/AuthContext";
+//import AuthDetails from "./AuthDetails";
 export default function Navbar() {
   const [click, setClick] = useState(false);
-
+  const { user, name } = useContext(AuthContext);
+  console.log(name + " receieved at navbar");
   const handleClick = () => setClick(!click);
   return (
     <>
