@@ -4,7 +4,9 @@ import React, { useState } from "react";
 import "./Audio.css";
 export default function Audio() {
   const recorderControls = useAudioRecorder();
-  const [curText, setCurText] = useState("Sample text");
+  const [curText, setCurText] = useState(
+    "Muitas gracias afición, esto es para vosotros "
+  );
   const [accuracy, setAccuracy] = useState("");
   const [base64Audio, setBase64Audio] = useState("");
   function blobToBase64(blob) {
