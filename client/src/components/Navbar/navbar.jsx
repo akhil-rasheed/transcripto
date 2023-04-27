@@ -20,7 +20,7 @@ export default function Navbar() {
             <button
               id="dropdownDefaultButton"
               data-dropdown-toggle="dropdown"
-              class="focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center "
+              class=" focus:outline-none font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center "
               type="button"
             >
               <img
@@ -54,12 +54,12 @@ export default function Navbar() {
                 aria-labelledby="dropdownDefaultButton"
               >
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/dashboard"
                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                   >
                     Dashboard
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
