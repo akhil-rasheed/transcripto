@@ -4,6 +4,10 @@ import cors from "cors";
 import morgan from "morgan";
 import speech from "@google-cloud/speech";
 import fs from "fs";
+import textToSpeech from "@google-cloud/text-to-speech";
+
+import util from "util";
+// Creates a client
 
 const app = express();
 //Middlewares
@@ -12,6 +16,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(morgan("combined"));
+app.use(express.static("public"));
+
+app.post("/get-audio", (req, res) => {
+  const text = req.body.text;
+  ssmlToAudio(text);
+});
 
 app.post("/audio-to-base64", (req, res) => {
   const { description, audio } = req.body;
@@ -62,6 +72,7 @@ async function detectSpeech(base64audio) {
     (xWord) => [xWord.word.toLowerCase(), xWord.confidence]
   );
   const confidence = response.results[0].alternatives[0].confidence;
+
   return { transcription, confidence, detectedWordList };
 }
 
@@ -83,21 +94,26 @@ function analyseSpeech(phrase, wordList) {
   return taggedWordList;
 }
 
-async function ssmlToAudio() {
+async function ssmlToAudio(audText) {
   const client = new textToSpeech.TextToSpeechClient();
 
   const request = {
-    input: { text: words[curIndex] },
+    input: { text: audText },
     voice: { languageCode: "pt-PT", ssmlGender: "FEMALE" },
     audioConfig: { audioEncoding: "MP3" },
   };
+  console.log(request.input);
 
   // Performs the Text-to-Speech request
   const [response] = await client.synthesizeSpeech(request);
-  const url = URL.createObjectURL(response.audioContent);
-  const audio = document.createElement("audio");
-  audio.src = url;
-  audio.controls = true;
-  document.body.appendChild(audio);
+  const writeFile = util.promisify(fs.writeFile);
+  await writeFile(
+    `./public/${audText
+      .toLowerCase()
+      .replaceAll(/\s/g, "")
+      .replace(/\?/g, "")}.mp3`,
+    response.audioContent,
+    "binary"
+  );
   // Write the binary audio content to a local file
 }
