@@ -1,15 +1,3 @@
-.navbar {
-  background-color: #5995fd;
-  height: 80px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.2rem;
-  position: sticky;
-  top: 0;
-  z-index: 20;
-}
-
 .nav-container {
   display: flex;
   justify-content: center;
@@ -32,7 +20,7 @@
   flex-grow: 1;
 }
 
-ul{
+ul {
   margin: 0;
 }
 .nav-menu {
@@ -70,7 +58,7 @@ ul{
 
 .nav-item:hover:after {
   width: 80%;
-  background: #77037B;
+  background: #77037b;
 }
 
 .nav-item .active {

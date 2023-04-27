@@ -4,14 +4,12 @@ import React, { useEffect, useState } from "react";
 import "./Audio.css";
 
 const words = [
-  "Olá",
-  "Bom Dia",
-  "Boa Tarde",
-  "Boa Noite",
-  "Prazer",
-  "Por favor",
-  "De nada",
-  "Obrigada",
+  "Eu estou procurando por",
+  "Você tem?",
+  "Gostaria de experimentar?",
+  "Onde é que estão os balneários?",
+  "Onde tem uma loja de roupas femininas?",
+  "Pode-se pagar com cartão de crédito",
 ];
 
 export default function Audio() {
@@ -63,10 +61,12 @@ export default function Audio() {
 
   return (
     <div>
-      <div className="container1">
-        <div className="display">
-          <div id="displayText">{words[curIndex]} </div>
-          <div id="recordText">
+      <div className="container1 bg-white h-screen">
+        <div className="display bg-white     text-white flex flex-col p-8 h-1/2 m-4 rounded-md">
+          <div className="h-full bg-black/50 text-5xl flex flex-col justify-center my-2  rounded-lg">
+            {words[curIndex]}{" "}
+          </div>
+          <div className="h-full bg-black/50 text-5xl flex flex-col justify-center my-2  rounded-lg">
             <div>
               {showResult
                 ? words[curIndex]
@@ -77,7 +77,6 @@ export default function Audio() {
                       const record = transcriptResult.find(
                         (xWord) => xWord.matchedWord === word
                       );
-                      console.log(record);
                       if (record && record.tag === "Correct") {
                         classname = "correct";
                       } else if (record && record.tag === "Partial") {
