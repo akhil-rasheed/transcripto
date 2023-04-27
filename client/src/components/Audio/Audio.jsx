@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CountUp from "react-countup";
 
 import "./Audio.css";
 
@@ -20,20 +21,23 @@ export default function Audio() {
   const [curIndex, setcurIndex] = useState(0);
   const [transcriptResult, setTranscriptResult] = useState([]);
   const [transcription, setTranscription] = useState("");
-  const [accuracy, setAccuracy] = useState("");
+  const [accuracy, setAccuracy] = useState(0);
+  const [currentScore, setCurrentScore] = useState(0);
+  const [previousScore, setPreviousScore] = useState(0);
+
   const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
     if (curIndex > words.length - 1) {
       setcurIndex(0);
     }
-
-    // axios
-    //   .post("http://localhost:8010/get-audio", {
-    //     text: words[curIndex],
-    //   })
-    //   .then((res) => {});
   }, [curIndex]);
+
+  useEffect(() => {
+    setPreviousScore(currentScore);
+    const newScore = currentScore + accuracy;
+    setCurrentScore(newScore);
+  }, [accuracy]);
 
   function blobToBase64(blob) {
     return new Promise((resolve) => {
@@ -45,19 +49,26 @@ export default function Audio() {
 
   const addAudioElement = async (blob) => {
     blobToBase64(blob).then((base64) => {
-      axios
-        .post("http://localhost:8010/audio-to-base64", {
-          description: words[curIndex],
-          audio: base64,
-        })
-        .then((res) => {
-          console.log(res.data);
-          setTranscriptResult(res.data.taggedList);
-          setAccuracy(res.data.confidence);
-          setTranscription(res.data.transcription);
-          setShowResult(true);
-          notify();
-        });
+      toast.promise(
+        axios
+          .post("http://localhost:8010/audio-to-base64", {
+            description: words[curIndex],
+            audio: base64,
+          })
+          .then((res) => {
+            console.log(res.data);
+            setTranscriptResult(res.data.taggedList);
+            setAccuracy(res.data.confidence * 100);
+
+            setTranscription(res.data.transcription);
+            setShowResult(true);
+          }),
+        {
+          pending: "Evaluating",
+
+          error: "error!",
+        }
+      );
     });
 
     //   const measuredAccuracy = res.data;
@@ -100,9 +111,9 @@ export default function Audio() {
     });
 
   return (
-    <div className="container1 bg-white h-screen">
-      <div className="display bg-white     text-white flex flex-col p-8 h-1/2 m-4 rounded-md">
-        <div className="h-full bg-black/75 text-5xl flex flex-row justify-center items-center my-2  rounded-lg">
+    <div>
+      <div className="display  text-white flex flex-col p-4 lg:p-8 h-1/2 lg:m-4 rounded-md">
+        <div className="h-full bg-black/75  text-2xl lg:text-5xl flex flex-row justify-center items-center my-2  rounded-lg">
           <button
             onClick={playAudio}
             className="h-10 w-10 text-sm m-8 p-2 bg-purple-400 text-white"
@@ -118,7 +129,14 @@ export default function Audio() {
           </button>
           {words[curIndex]}{" "}
         </div>
-        <div className="h-full bg-black/75 text-5xl flex flex-col justify-center my-2  rounded-lg">
+        <div className="h-full bg-black/75 text-5xl flex flex-row justify-center items-center my-2  rounded-lg">
+          <div className="recordComp p-8">
+            <AudioRecorder
+              onRecordingComplete={(blob) => addAudioElement(blob)}
+              recorderControls={recorderControls}
+              color="purple"
+            />
+          </div>
           <div>
             {showResult
               ? words[curIndex]
@@ -147,54 +165,43 @@ export default function Audio() {
         </div>
       </div>
       <div className="record">
-        <div className="recordComp">
-          <AudioRecorder
-            onRecordingComplete={(blob) => addAudioElement(blob)}
-            recorderControls={recorderControls}
-          />
-        </div>
-
         <ToastContainer />
-
-        {/* <TextToSpeech
-            text={words[curIndex]}
-            voiceList={[
-              { name: "English (US) Male", value: "en-US-Wavenet-A" },
-              { name: "English (US) Female", value: "en-US-Wavenet-E" },
-            ]}
-            defaultVoice="en-US-Wavenet-E"
-            secretKey="AIzaSyCqQICOuuRMjN6wxv7SCWG6N2prMmd9GpY"
-            showAudioControl={true}
-            showSettings={false}
-            type="Page"
-          ></TextToSpeech> */}
         <audio id="my-audio">
           <source src="" type="audio/mpeg" />
         </audio>
       </div>
-      <div className="bg-black ">
-        <div className="bg-black text-white p-8 flex flex-row w-full h-full ">
-          <div className="flex flex-col w-1/2">
-            <div className="">
-              What you said:{" "}
-              <span className="text-bold text-lg">{transcription}</span>
-            </div>
-            <div>
-              Accuracy: <span className="text-green text-xl">{accuracy}</span>
-            </div>
+      <div className="bg-black text-white p-8 flex flex-row w-full ">
+        <div className="flex flex-row w-1/2 items-center justify-center">
+          <div className="text-lg flex flex-row items-center justify-center ">
+            Accuracy:
+            <span className="text-green-400 text-5xl px-8">
+              {accuracy.toString().slice(0, 2)}%
+            </span>
           </div>
-
-          <button
-            className="w-1/2 h-20 bg-purple-400"
-            onClick={() => {
-              setcurIndex(curIndex + 1);
-              setTranscriptResult([]);
-              setShowResult(false);
-            }}
-          >
-            Next
-          </button>
+          <div className="text-lg flex flex-row items-center justify-center ">
+            Score:
+            <span className="text-green-400 text-5xl px-8">
+              <CountUp
+                start={Math.floor(previousScore)}
+                end={Math.floor(currentScore)}
+                duration={2.75}
+                onEnd={() => console.log("Ended! 👏")}
+                onStart={() => console.log("Started! 💨")}
+              ></CountUp>
+            </span>
+          </div>
         </div>
+
+        <button
+          className="w-1/2 h-20 bg-purple-400"
+          onClick={() => {
+            setcurIndex(curIndex + 1);
+            setTranscriptResult([]);
+            setShowResult(false);
+          }}
+        >
+          Next
+        </button>
       </div>
     </div>
   );

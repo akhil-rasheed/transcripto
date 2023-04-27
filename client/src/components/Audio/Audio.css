@@ -11,18 +11,6 @@
   justify-content: space-between;
 }
 
-.re {
-  padding: 50px;
-}
-
-button {
-  background-color: #5995fd;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
-}
-
 .correct {
   margin-right: 8px;
 
@@ -38,9 +26,4 @@ button {
   margin-right: 8px;
 
   color: red;
-}
-
-ul {
-  list-style: none;
-  border-radius: 10px;
 }
