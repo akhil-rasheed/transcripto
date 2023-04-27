@@ -19,7 +19,7 @@ function Login() {
   const SubmitHandler = (event) => {
     event.preventDefault();
     signInWithEmailAndPassword(auth, enteredEmail, enteredPassword)
-      .then(async (userCredential) => {
+      .then((userCredential) => {
         console.log(userCredential);
         // const docRef = doc(database, "users", `${enteredEmail}`);
         // const docSnap = await getDoc(docRef);

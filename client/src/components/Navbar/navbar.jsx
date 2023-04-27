@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-//mport "../css/navbar.css";
 import { AuthContext } from "../../Context/AuthContext";
-//import AuthDetails from "./AuthDetails";
 import "./navbar.css";
 
 export default function Navbar() {
