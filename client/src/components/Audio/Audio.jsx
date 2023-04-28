@@ -12,6 +12,7 @@ import CountUp from "react-countup";
 import "./Audio.css";
 import { AuthContext } from "../../Context/AuthContext";
 import { async } from "@firebase/util";
+import { Link } from "react-router-dom";
 
 const words = [
   "Bom dia",
@@ -112,7 +113,7 @@ export default function Audio() {
           .then((res) => {
             console.log(res.data);
             setTranscriptResult(res.data.taggedList);
-            setAccuracy({ value: res.data.confidence * 100 });
+            setAccuracy({ value: res.data.newConf * 100 });
 
             setTranscription(res.data.transcription);
             setShowResult(true);
@@ -198,8 +199,10 @@ export default function Audio() {
                   .split(" ")
                   .map((word) => {
                     let classname = "";
-                    const record = transcriptResult.find(
-                      (xWord) => xWord.matchedWord === word.replace(/\?/g, "")
+                    const record = transcriptResult?.find(
+                      (xWord) =>
+                        xWord.matchedWord ===
+                        word.replace(/\?/g, "").replace(/\!/g, "")
                     );
                     if (record && record.tag === "Correct") {
                       classname = "correct";

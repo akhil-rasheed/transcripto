@@ -27,9 +27,11 @@ app.post("/audio-to-base64", (req, res) => {
   const { description, audio } = req.body;
   detectSpeech(audio).then(
     ({ transcription, confidence, detectedWordList }) => {
-      const taggedList = analyseSpeech(description, detectedWordList);
-      console.log(transcription, confidence, taggedList);
-      res.send({ transcription, confidence, taggedList });
+      const result = analyseSpeech(description, detectedWordList, confidence);
+      console.log(transcription, result[1], result[0]);
+      const newConf = result[1];
+      const taggedList = result[0];
+      res.send({ transcription, newConf, taggedList });
     }
   );
 });
@@ -76,8 +78,12 @@ async function detectSpeech(base64audio) {
   return { transcription, confidence, detectedWordList };
 }
 
-function analyseSpeech(phrase, wordList) {
-  const phraseArray = phrase.toLowerCase().replace(/\?/g, "").split(" ");
+function analyseSpeech(phrase, wordList, confidence) {
+  const phraseArray = phrase
+    .toLowerCase()
+    .replace(/\?/g, "")
+    .replace(/\!/g, "")
+    .split(" ");
   console.log(phraseArray, wordList);
   const filteredWordList = wordList.filter((word) => {
     return phraseArray.includes(word[0]);
@@ -91,7 +97,14 @@ function analyseSpeech(phrase, wordList) {
       tag: tag,
     };
   });
-  return taggedWordList;
+  let newConf = confidence;
+  if (taggedWordList?.length < phraseArray?.length) {
+    newConf =
+      confidence -
+      (0.6 * (phraseArray.length - taggedWordList.length)) / phraseArray.length;
+  }
+  console.log(newConf);
+  return [taggedWordList, newConf];
 }
 
 async function ssmlToAudio(audText) {
@@ -99,7 +112,7 @@ async function ssmlToAudio(audText) {
 
   const request = {
     input: { text: audText },
-    voice: { languageCode: "pt-PT", ssmlGender: "FEMALE" },
+    voice: { languageCode: "pt-PT", ssmlGender: "NEUTRAL" },
     audioConfig: { audioEncoding: "MP3" },
   };
   console.log(request.input);

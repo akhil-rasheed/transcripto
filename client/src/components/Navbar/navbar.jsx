@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthContext";
 //import "./navbar.css";
@@ -14,7 +14,11 @@ export default function Navbar() {
       <nav className="bg-black text-white rounded-b-full h-20 lg:h-24">
         <div className="nav-container flex flex-row justify-evenly items-start h-full">
           <div className="flex flex-1 flex-row items-center justify-center">
-            <img src="logo.png" className="h-16 lg:h-20" alt="transcripto" />
+            <img
+              src="logo.png"
+              className="ml-32 h-16 lg:h-20 mt-2"
+              alt="transcripto"
+            />
           </div>
           <div className="flex mr-8 mt-4  lg:mr-16 mt-6">
             <button
@@ -28,10 +32,11 @@ export default function Navbar() {
                 src="userIcon.png"
                 alt="Rounded avatar"
               />
+              <span className="font-bold text-md p-4">{name}</span>
               <svg
                 class="w-4 h-4 ml-2"
                 aria-hidden="true"
-                fill="none"
+                fill="purple"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
@@ -39,6 +44,7 @@ export default function Navbar() {
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
+                  fill="purple"
                   stroke-width="2"
                   d="M19 9l-7 7-7-7"
                 ></path>
@@ -68,15 +74,14 @@ export default function Navbar() {
                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                   >
                     {" "}
-                    Sign out? <br />
-                    Bye {name}!
+                    Sign out <br />
                   </Link>
                 </li>
               </ul>
             </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
   );
 }
