@@ -17,6 +17,7 @@
     "react-audio-voice-recorder": "^1.0.10",
     "react-countup": "^6.4.2",
     "react-circular-progressbar": "^2.1.0",
+    "react-countup": "^6.4.2",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",

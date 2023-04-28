@@ -1,11 +1,17 @@
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+
+import { app, auth } from "../../firebase";
+import { database } from "../../firebase";
+import { doc, getDoc, setDoc, increment, updateDoc } from "firebase/firestore";
+import React, { useContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CountUp from "react-countup";
 
 import "./Audio.css";
+import { AuthContext } from "../../Context/AuthContext";
+import { async } from "@firebase/util";
 
 const words = [
   "Bom dia",
@@ -38,6 +44,7 @@ export default function Audio() {
   const [previousScore, setPreviousScore] = useState(0);
   const [finished, setFinished] = useState(false);
 
+  const { user, name } = useContext(AuthContext);
   const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
@@ -55,6 +62,34 @@ export default function Audio() {
   }, [accuracy]);
 
   function submit() {
+    const washingtonRef = doc(database, "users", user.email);
+
+    // Atomically increment the population of the city by 50.
+    updateDoc(washingtonRef, {
+      count: increment(1),
+      score: increment(currentScore / 18),
+    });
+    // let count1;
+    // let score1;
+    // getDoc(doc(database, "users", user.email)).then((docSnap) => {
+    //   if (docSnap.exists()) {
+    //     count1 = docSnap.data().count;
+    //     score1 = docSnap.data().score;
+
+    //     console.log("Document data:", docSnap.data());
+    //   } else {
+    //     console.log("No such document!");
+    //   }
+    // });
+
+    // setDoc(doc(database, "users", user.email), {
+    //   score: score1 + currentScore / 18,
+    //   count: count1 + 1,
+    // })
+    //   .then(() => {
+    //     console.log("Success");
+    //   })
+    //   .err(console.log());
     setFinished(true);
   }
 

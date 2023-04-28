@@ -30,11 +30,9 @@ function SignUp() {
       .then(() => {
         setDoc(doc(database, "users", `${enteredEmail}`), {
           username: enteredName,
+          count: 0,
+          score: 0,
         });
-        // addDoc(collection(database, "users"), {
-        //   email: enteredEmail,
-
-        // });
       })
       .catch((error) => {
         console.log(error);

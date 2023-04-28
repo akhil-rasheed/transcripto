@@ -10,7 +10,7 @@ export default function Navbar() {
   console.log(name + " receieved at navbar");
   const handleClick = () => setClick(!click);
   return (
-    <div className="bg-teal-400 mt-0 rounded-t-full">
+    <div className=" mt-0 rounded-t-full">
       <nav className="bg-black text-white rounded-b-full h-20 lg:h-24">
         <div className="nav-container flex flex-row justify-evenly items-start h-full">
           <div className="flex flex-1 flex-row items-center justify-center">
