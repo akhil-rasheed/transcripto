@@ -8,12 +8,24 @@ import CountUp from "react-countup";
 import "./Audio.css";
 
 const words = [
+  "Bom dia",
+  "Boa tarde",
+  "Boa noite",
+  "Até breve!",
+  "Que tal amanhã?",
+  "Por favor",
+  "Com licença",
+  "De nada",
   "Eu estou procurando por",
   "Você tem?",
   "Gostaria de experimentar?",
   "Onde é que estão os balneários?",
   "Onde tem uma loja de roupas femininas?",
   "Pode-se pagar com cartão de crédito",
+  "Como eu chego ao",
+  "Qual a distância até",
+  "Quanto custa?",
+  "Eu gostaria de outro quarto",
 ];
 
 export default function Audio() {
@@ -21,23 +33,30 @@ export default function Audio() {
   const [curIndex, setcurIndex] = useState(0);
   const [transcriptResult, setTranscriptResult] = useState([]);
   const [transcription, setTranscription] = useState("");
-  const [accuracy, setAccuracy] = useState(0);
+  const [accuracy, setAccuracy] = useState({ value: 0 });
   const [currentScore, setCurrentScore] = useState(0);
   const [previousScore, setPreviousScore] = useState(0);
+  const [finished, setFinished] = useState(false);
 
   const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
     if (curIndex > words.length - 1) {
       setcurIndex(0);
+      submit();
     }
+    axios.post("http://localhost:8010/get-audio", { text: words[curIndex] });
   }, [curIndex]);
 
   useEffect(() => {
     setPreviousScore(currentScore);
-    const newScore = currentScore + accuracy;
+    const newScore = currentScore + accuracy.value;
     setCurrentScore(newScore);
   }, [accuracy]);
+
+  function submit() {
+    setFinished(true);
+  }
 
   function blobToBase64(blob) {
     return new Promise((resolve) => {
@@ -58,7 +77,7 @@ export default function Audio() {
           .then((res) => {
             console.log(res.data);
             setTranscriptResult(res.data.taggedList);
-            setAccuracy(res.data.confidence * 100);
+            setAccuracy({ value: res.data.confidence * 100 });
 
             setTranscription(res.data.transcription);
             setShowResult(true);
@@ -112,8 +131,8 @@ export default function Audio() {
 
   return (
     <div>
-      <div className="display  text-white flex flex-col p-4 lg:p-8 h-1/2 lg:m-4 rounded-md">
-        <div className="h-full bg-black/75  text-2xl lg:text-5xl flex flex-row justify-center items-center my-2  rounded-lg">
+      <div className="display  text-white flex flex-col p-4 lg:p-8 lg:m-4 rounded-md">
+        <div className="h-full bg-black/75  text-2xl lg:text-5xl flex flex-row lg:justify-center items-center my-2  rounded-lg">
           <button
             onClick={playAudio}
             className="h-10 w-10 text-sm m-8 p-2 bg-purple-400 text-white"
@@ -129,7 +148,7 @@ export default function Audio() {
           </button>
           {words[curIndex]}{" "}
         </div>
-        <div className="h-full bg-black/75 text-5xl flex flex-row justify-center items-center my-2  rounded-lg">
+        <div className="h-full bg-black/75 text-2xl lg:text-5xl flex flex-row lg:justify-center items-center my-2  rounded-lg">
           <div className="recordComp p-8">
             <AudioRecorder
               onRecordingComplete={(blob) => addAudioElement(blob)}
@@ -145,7 +164,7 @@ export default function Audio() {
                   .map((word) => {
                     let classname = "";
                     const record = transcriptResult.find(
-                      (xWord) => xWord.matchedWord === word
+                      (xWord) => xWord.matchedWord === word.replace(/\?/g, "")
                     );
                     if (record && record.tag === "Correct") {
                       classname = "correct";
@@ -170,39 +189,64 @@ export default function Audio() {
           <source src="" type="audio/mpeg" />
         </audio>
       </div>
-      <div className="bg-black text-white p-8 flex flex-row w-full ">
-        <div className="flex flex-row w-1/2 items-center justify-center">
-          <div className="text-lg flex flex-row items-center justify-center ">
-            Accuracy:
-            <span className="text-green-400 text-5xl px-8">
-              {accuracy.toString().slice(0, 2)}%
-            </span>
+      {!finished && (
+        <div className="bg-black fixed bottom-0 text-white p-8 flex flex-row w-full ">
+          <div className="flex flex-col lg:flex-row w-1/2 items-center justify-center">
+            <div className="text-lg flex flex-row items-center justify-center ">
+              Accuracy:
+              <span className="text-green-400 lg:text-5xl px-8">
+                {accuracy.value.toString().slice(0, 2)}%
+              </span>
+            </div>
+            <div className="text-lg flex flex-row items-center justify-center ">
+              Score:
+              <span className="text-green-400 lg:text-5xl px-8">
+                <CountUp
+                  start={Math.floor(previousScore)}
+                  end={Math.floor(currentScore)}
+                  duration={2.75}
+                  onEnd={() => console.log("Ended! 👏")}
+                  onStart={() => console.log("Started! 💨")}
+                ></CountUp>
+              </span>
+            </div>
           </div>
-          <div className="text-lg flex flex-row items-center justify-center ">
-            Score:
-            <span className="text-green-400 text-5xl px-8">
-              <CountUp
-                start={Math.floor(previousScore)}
-                end={Math.floor(currentScore)}
-                duration={2.75}
-                onEnd={() => console.log("Ended! 👏")}
-                onStart={() => console.log("Started! 💨")}
-              ></CountUp>
-            </span>
+
+          <button
+            className="w-1/2 h-20 bg-purple-400"
+            onClick={() => {
+              setcurIndex(curIndex + 1);
+              setTranscriptResult([]);
+              setShowResult(false);
+            }}
+          >
+            Next
+          </button>
+        </div>
+      )}
+      {finished && (
+        <div className="bg-black fixed bottom-0 text-white p-8  w-full ">
+          <div className="flex flex-col h-full">
+            <div className="flex flex-col mb-6 lg:flex-row w-full items-center justify-center">
+              <div className="text-lg flex flex-row items-center justify-center ">
+                <span className="text-purple-400 lg:text-3xl px-4">
+                  Congratulations! 🎊
+                </span>
+              </div>
+              <div className="text-lg flex flex-row  items-center justify-center ">
+                <span className="text-purple-400 lg:text-3xl px-4">
+                  Your accuracy was {Math.floor(currentScore / 18)}%
+                </span>
+              </div>
+            </div>
+            <div>
+              <button className="bg-purple-400 text-3xl p-4 rounded-md">
+                View Dashboard
+              </button>
+            </div>
           </div>
         </div>
-
-        <button
-          className="w-1/2 h-20 bg-purple-400"
-          onClick={() => {
-            setcurIndex(curIndex + 1);
-            setTranscriptResult([]);
-            setShowResult(false);
-          }}
-        >
-          Next
-        </button>
-      </div>
+      )}
     </div>
   );
 }

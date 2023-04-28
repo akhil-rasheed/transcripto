@@ -77,7 +77,7 @@ async function detectSpeech(base64audio) {
 }
 
 function analyseSpeech(phrase, wordList) {
-  const phraseArray = phrase.toLowerCase().split(" ");
+  const phraseArray = phrase.toLowerCase().replace(/\?/g, "").split(" ");
   console.log(phraseArray, wordList);
   const filteredWordList = wordList.filter((word) => {
     return phraseArray.includes(word[0]);
